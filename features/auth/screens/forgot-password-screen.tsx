@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AuthScreen } from "@/features/auth/components/auth-screen";
+import { AuthLogo, AuthTrustBadges } from "@/features/auth/components/auth-ui";
+import { useAuth } from "@/features/auth/context/auth-context";
+import {
+    ForgotPasswordFormValues,
+    forgotPasswordSchema,
+} from "@/features/auth/schemas/auth-schemas";
 import { useThemeColors } from "@/hooks/use-theme-colors";
-import { AuthLogo, AuthTrustBadges } from "@/src/features/auth/components/auth-ui";
-import { AuthScreen } from "@/src/features/auth/components/auth-screen";
-import { useAuth } from "@/src/features/auth/context/auth-context";
-import { ForgotPasswordFormValues, forgotPasswordSchema } from "@/src/features/auth/schemas/auth-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { AtSign, CheckCircle } from "lucide-react-native";
@@ -54,7 +57,11 @@ export default function ForgotPasswordScreen() {
                 {getValues("email")}
               </Text>
             </Text>
-            <Button size="lg" className="w-full mt-2" onPress={() => router.back()}>
+            <Button
+              size="lg"
+              className="w-full mt-2"
+              onPress={() => router.back()}
+            >
               Volver al inicio de sesión
             </Button>
           </View>
@@ -94,7 +101,12 @@ export default function ForgotPasswordScreen() {
               </Text>
             )}
 
-            <Button size="lg" loading={isSubmitting} onPress={handleSubmit(onSubmit)} className="mt-1">
+            <Button
+              size="lg"
+              loading={isSubmitting}
+              onPress={handleSubmit(onSubmit)}
+              className="mt-1"
+            >
               Enviar instrucciones
             </Button>
 

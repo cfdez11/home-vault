@@ -1,5 +1,5 @@
 import { CustomTabBar } from "@/components/custom-tab-bar";
-import { useAuth } from "@/src/features/auth/context/auth-context";
+import { useAuth } from "@/features/auth/context/auth-context";
 import { Redirect, Tabs } from "expo-router";
 
 export default function TabLayout() {

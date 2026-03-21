@@ -1,7 +1,7 @@
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/context/auth-context";
 import { useThemeColors } from "@/hooks/use-theme-colors";
-import { useAuth } from "@/src/features/auth/context/auth-context";
 import { LogOut } from "lucide-react-native";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

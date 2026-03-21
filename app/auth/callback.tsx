@@ -1,4 +1,4 @@
-import { useAuth } from "@/src/features/auth/context/auth-context";
+import { useAuth } from "@/features/auth/context/auth-context";
 import { Redirect } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
