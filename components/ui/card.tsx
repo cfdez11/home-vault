@@ -1,0 +1,47 @@
+import React from "react";
+import { View } from "react-native";
+import { Button } from "./button";
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+
+interface CardProps {
+  children: React.ReactNode;
+  onPress?: () => void;
+  className?: string;
+}
+
+export function Card({ children, onPress, className = "" }: CardProps) {
+  if (onPress) {
+    return (
+      <Button
+        unstyled
+        onPress={onPress}
+        activeOpacity={0.9}
+        className={`rounded-lg ${className}`}
+      >
+        {children}
+      </Button>
+    );
+  }
+
+  return <View className={`rounded-lg ${className}`}>{children}</View>;
+}
+
+// ─── Card sub-components ──────────────────────────────────────────────────────
+
+interface CardSectionProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export function CardHeader({ children, className = "" }: CardSectionProps) {
+  return <View className={`px-4 pt-4 pb-2 ${className}`}>{children}</View>;
+}
+
+export function CardContent({ children, className = "" }: CardSectionProps) {
+  return <View className={`px-4 py-3 ${className}`}>{children}</View>;
+}
+
+export function CardFooter({ children, className = "" }: CardSectionProps) {
+  return <View className={`px-4 pt-2 pb-4 ${className}`}>{children}</View>;
+}
