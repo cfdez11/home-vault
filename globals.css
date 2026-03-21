@@ -1,3 +1,94 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Radius */
+  --radius: 1.5rem; /* 24px — cards, modals */
+  --radius-md: 1rem; /* 16px — inner card elements */
+  --radius-sm: 0.75rem; /* 12px — buttons, inputs */
+
+  /* Core - shadcn naming */
+  --background: #eaecf0;
+  --foreground: #0f172a;
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --primary: #1e3a8a;
+  --primary-foreground: #f8fafc;
+  --primary-subtle: #dbeafe;
+
+  --secondary: #64748b;
+  --secondary-foreground: #f8fafc;
+
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  --accent: #0ea5e9;
+  --accent-foreground: #0f172a;
+  --accent-subtle: #e0f2fe;
+
+  --destructive: #ba1a1a;
+  --destructive-foreground: #f8fafc;
+  --destructive-subtle: #ffdad6;
+
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #1e3a8a;
+
+  /* Extended */
+  --success: #16a34a;
+  --success-foreground: #f8fafc;
+  --success-subtle: #dcfce7;
+
+  --warning: #d97706;
+  --warning-foreground: #0f172a;
+  --warning-subtle: #fef3c7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+
+    --card: #1e293b;
+    --card-foreground: #f8fafc;
+
+    --popover: #1e293b;
+    --popover-foreground: #f8fafc;
+
+    --primary: #93c5fd;
+    --primary-foreground: #1e3a8a;
+    --primary-subtle: #1e3a8a;
+
+    --secondary: #94a3b8;
+    --secondary-foreground: #0f172a;
+
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+
+    --accent: #38bdf8;
+    --accent-foreground: #0f172a;
+    --accent-subtle: #075985;
+
+    --destructive: #f87171;
+    --destructive-foreground: #0f172a;
+    --destructive-subtle: #7f1d1d;
+
+    --border: #334155;
+    --input: #334155;
+    --ring: #93c5fd;
+
+    --success: #4ade80;
+    --success-foreground: #0f172a;
+    --success-subtle: #14532d;
+
+    --warning: #fcd34d;
+    --warning-foreground: #0f172a;
+    --warning-subtle: #78350f;
+  }
+}
