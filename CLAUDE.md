@@ -291,6 +291,108 @@ export default function HomeScreen() {
 
 ---
 
+## Authentication
+
+### Architecture
+
+Auth state lives in `AuthProvider` (`src/features/auth/context/auth-context.tsx`), mounted at the root in `app/_layout.tsx`. Never add auth logic outside this provider.
+
+```
+lib/supabase.ts              → Supabase client (implicit OAuth flow, localStorage storage)
+src/features/auth/
+  context/auth-context.tsx   → Session state + all auth methods
+  schemas/auth-schemas.ts    → Zod schemas (loginSchema, registerSchema, forgotPasswordSchema)
+  components/auth-screen.tsx → Base layout (SafeAreaView + KAV + ScrollView) for all auth screens
+  components/auth-ui.tsx     → Shared UI (AuthLogo, AuthDivider, GoogleIcon, AuthTrustBadges)
+  screens/                   → login-screen, register-screen, forgot-password-screen
+app/auth/                    → Route wrappers (login, register, forgot-password, callback)
+```
+
+### Session protection (declarative pattern)
+
+Each route group protects itself with a declarative `<Redirect>`. **Never use `useEffect` + `router.replace` for auth redirects.**
+
+```tsx
+// app/(tabs)/_layout.tsx — protects all tabs
+const { session, loading } = useAuth();
+if (loading) return null;
+if (!session) return <Redirect href="/auth/login" />;
+
+// app/auth/login.tsx — prevents authenticated users from seeing login
+const { session, loading } = useAuth();
+if (loading) return null;
+if (session) return <Redirect href="/(tabs)" />;
+```
+
+### useAuth() hook
+
+```ts
+const { session, loading, signIn, signUp, signInWithGoogle, resetPassword, signOut } = useAuth();
+```
+
+All methods return `Promise<{ error: string | null }>` except `signOut`. Always check `error` and use `setError('root', { message: error })` with React Hook Form.
+
+### Forms pattern
+
+All auth forms use React Hook Form + Zod:
+
+```tsx
+const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm({
+  resolver: zodResolver(loginSchema),
+  defaultValues: { email: "", password: "" },
+});
+
+async function onSubmit(data) {
+  const { error } = await signIn(data.email, data.password);
+  if (error) setError("root", { message: error });
+  // On success: declarative Redirect in the layout handles navigation
+}
+```
+
+- Use `isSubmitting` for the button `loading` prop — never manage a manual loading state
+- Use `errors.root?.message` for server-side errors
+- Use `Controller` (not `register`) — React Native requires `onChangeText`, not `onChange`
+
+### Google OAuth flow
+
+Uses `expo-web-browser` + Supabase implicit flow. The browser is opened inside the app, intercepts the redirect, and tokens are parsed from the URL fragment.
+
+```
+signInWithGoogle()
+  → supabase.signInWithOAuth (skipBrowserRedirect: true)
+  → WebBrowser.openAuthSessionAsync(oauthUrl, redirectTo)
+  → browser closes when redirectTo URL is detected
+  → parse #access_token + #refresh_token from result.url
+  → supabase.auth.setSession(tokens)
+  → onAuthStateChange fires → session updated → tabs redirect
+```
+
+**Supabase Dashboard setup required:**
+- Authentication → URL Configuration → Redirect URLs: add `exp://**` (Expo Go) and `homevault://**` (production)
+- Authentication → Providers → Google: configure Client ID + Secret from Google Cloud Console
+
+**Why implicit flow (not PKCE):** `expo-sqlite/localStorage` does not reliably persist the PKCE code verifier between OAuth initiation and callback. `flowType: 'implicit'` is set in `lib/supabase.ts` to work around this.
+
+### AuthScreen layout component
+
+All auth screens use `AuthScreen` from `src/features/auth/components/auth-screen.tsx` instead of managing layout manually. It handles `SafeAreaView` + `KeyboardAvoidingView` + `ScrollView` with the correct `keyboardVerticalOffset` using `useSafeAreaInsets()`.
+
+```tsx
+// Screens with few fields — content centered vertically
+<AuthScreen>...</AuthScreen>
+
+// Screens with many fields (register) — free scroll, no centering
+<AuthScreen centered={false}>...</AuthScreen>
+```
+
+**Never** add `SafeAreaView`, `KeyboardAvoidingView`, or `ScrollView` manually in auth screens — use `AuthScreen` instead.
+
+### OAuth callback route
+
+`app/auth/callback.tsx` exists solely as an Expo Router target for the OAuth deep link. With `WebBrowser.openAuthSessionAsync`, the session is set before this screen renders, so it immediately redirects to tabs via its own `<Redirect>`.
+
+---
+
 ## Path Alias
 
 `@/` maps to the project root. Always use it for imports:
@@ -312,6 +414,24 @@ Use `.ios.tsx` / `.web.ts` suffixes for platform variants. Expo Router resolves 
 
 ---
 
+## Icons
+
+**Always use `lucide-react-native`** for all icons across the entire app. Never use emoji, custom SVG components, raw `Text` characters, or any other icon library.
+
+```tsx
+import { Shield, Lock, Globe, HouseHeart } from "lucide-react-native";
+
+// Always use useThemeColors() for icon color
+const colors = useThemeColors();
+<Shield size={20} color={colors.mutedForeground} />
+```
+
+- Icon size and color must always be passed explicitly — never rely on defaults
+- Use `colors.*` from `useThemeColors()` for icon colors — never hardcode hex values
+- **Exception**: `GoogleIcon` in `auth-ui.tsx` uses `react-native-svg` with Google brand colors — this is intentional and the only allowed SVG icon in the codebase
+
+---
+
 ## What NOT to do
 
 - Do not use `Colors` from `@/constants/theme` — use `useThemeColors()` instead
@@ -319,3 +439,4 @@ Use `.ios.tsx` / `.web.ts` suffixes for platform variants. Expo Router resolves 
 - Do not add `bg-card` inside the `Card` component itself — the caller passes the background
 - Do not use `useColorScheme` + conditional color logic — use `useThemeColors()` which handles this
 - Do not add colors to `tailwind.config.js` — add them to `lib/theme-tokens.ts` first, then the config references `var(--token-name)`
+- Do not use emoji or non-Lucide icons — always use `lucide-react-native`

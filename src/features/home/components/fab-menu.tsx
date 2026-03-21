@@ -50,7 +50,7 @@ export function FabMenu({ expanded, onToggle }: FabMenuProps) {
           <FabAction
             icon={<BellPlus size={18} color={colors.primary} />}
             label="Añadir Incidencia"
-            onPress={() => router.push('/incidencias/new')}
+            onPress={() => router.push('/incidencias/new' as any)}
           />
           <FabAction
             icon={<Building2 size={18} color={colors.primary} />}

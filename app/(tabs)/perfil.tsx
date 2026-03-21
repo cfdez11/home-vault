@@ -1,14 +1,27 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { AppHeader } from '@/components/app-header';
+import { AppHeader } from "@/components/app-header";
+import { Button } from "@/components/ui/button";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { useAuth } from "@/src/features/auth/context/auth-context";
+import { LogOut } from "lucide-react-native";
+import { Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
+  const { signOut } = useAuth();
+  const colors = useThemeColors();
+
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f9fb]">
+    <SafeAreaView className="flex-1 bg-background">
       <AppHeader title="Perfil" />
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-sm text-[#444651] mt-2">Próximamente</Text>
+      <View className="px-6 pb-8">
+        <Button variant="outline" size="lg" onPress={signOut}>
+          <View className="flex-row items-center gap-2">
+            <LogOut size={18} color={colors.destructive} />
+            <Text className="text-base font-inter-semibold text-destructive">
+              Cerrar sesión
+            </Text>
+          </View>
+        </Button>
       </View>
     </SafeAreaView>
   );
