@@ -18,6 +18,7 @@ import {
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { NativewindThemeProvider } from '@/components/ui/nativewind-theme-provider';
+import { AuthProvider } from '@/src/features/auth/context/auth-context';
 
 import '../globals.css';
 
@@ -44,14 +45,19 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <NativewindThemeProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-          <Stack.Screen name="propiedades/[id]/incidencias" options={{ headerShown: false }} />
-          <Stack.Screen name="incidencias/[id]/edit" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <StatusBar style="auto" />
+        <AuthProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/register" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/forgot-password" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+            <Stack.Screen name="propiedades/[id]/incidencias" options={{ headerShown: false }} />
+            <Stack.Screen name="incidencias/[id]/edit" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </AuthProvider>
       </NativewindThemeProvider>
     </ThemeProvider>
   );
