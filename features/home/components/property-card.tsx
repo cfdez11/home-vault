@@ -1,5 +1,10 @@
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import {
   AlertTriangle,
@@ -41,22 +46,14 @@ export function PropertyCard({
         className="mx-3 mt-3 h-[180px] rounded-md overflow-hidden"
         style={{ backgroundColor: imageBgColor }}
       >
-        <Badge
-          variant="card"
-          size="sm"
-          uppercase
-          className="absolute top-3 right-3"
-        >
+        <Badge variant="card" className="absolute top-3 right-3">
           {tagLabel}
         </Badge>
       </View>
 
-      {/* Content */}
-      <View className="px-4 pt-3 pb-4 gap-1.5">
+      <CardContent className="pt-3 pb-4 gap-1.5">
         <View className="flex-row justify-between items-baseline">
-          <Text className="text-[18px] font-manrope-bold text-primary flex-1 mr-2">
-            {name}
-          </Text>
+          <CardTitle className="flex-1 mr-2">{name}</CardTitle>
           <Text className="text-[13px] font-inter-medium text-primary">
             {year}
           </Text>
@@ -64,9 +61,7 @@ export function PropertyCard({
 
         <View className="flex-row items-center gap-1">
           <MapPin size={13} color={colors.mutedForeground} />
-          <Text className="text-[13px] font-inter text-muted-foreground">
-            {address}
-          </Text>
+          <CardDescription>{address}</CardDescription>
         </View>
 
         <View className="flex-row gap-2 mt-1">
@@ -81,7 +76,7 @@ export function PropertyCard({
           )}
           <Badge variant="muted" icon={Folder}>{`${docsCount} Docs`}</Badge>
         </View>
-      </View>
+      </CardContent>
     </Card>
   );
 }
