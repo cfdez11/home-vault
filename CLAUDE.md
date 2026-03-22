@@ -30,34 +30,34 @@ app/                        # Expo Router file-based routes
 │   ├── propiedades.tsx
 │   ├── empresas.tsx
 │   └── perfil.tsx
-├── auth/login.tsx
+├── auth/                   # Auth screens (login, register, forgot-password, callback)
 ├── incidencias/
 ├── propiedades/
-├── _layout.tsx             # Root layout (fonts, NativewindThemeProvider, Stack)
-└── modal.tsx
+└── _layout.tsx             # Root layout (fonts, NativewindThemeProvider, Stack)
 
-src/
-└── features/               # One folder per feature
-    ├── home/
-    │   ├── screens/        # Full screen components (rendered by app/ routes)
-    │   └── components/     # Feature-specific components
-    ├── auth/
-    ├── companies/
-    ├── incidents/
-    └── properties/
+features/                   # One folder per feature (no src/ prefix)
+├── home/
+│   ├── screens/            # Full screen components (rendered by app/ routes)
+│   └── components/         # Feature-specific components
+├── auth/
+├── properties/
+└── [future features]/
 
 components/                 # Complex shared app components
 ├── app-header.tsx          # Page header with title + notification bell
-└── custom-tab-bar.tsx      # Custom bottom tab bar
+├── custom-tab-bar.tsx      # Custom bottom tab bar
+├── fab-menu.tsx            # Expandable floating action button
+└── screen-title.tsx        # Page title + subtitle + optional action
 
 components/ui/              # Base/primitive design system components
 ├── badge.tsx
+├── bottom-sheet.tsx        # Animated modal sheet with drag-to-close
 ├── button.tsx
 ├── card.tsx
+├── input.tsx
 ├── screen.tsx              # Screen + ScreenSection layout components
-├── section-title.tsx
+├── separator.tsx
 ├── nativewind-theme-provider.tsx
-├── collapsible.tsx
 ├── icon-symbol.tsx         # Cross-platform icon (SF Symbols on iOS, MaterialIcons elsewhere)
 └── icon-symbol.ios.tsx
 
@@ -135,6 +135,26 @@ Defined in `globals.css` and `nativewind-theme-provider.tsx`:
 
 ## Component Library
 
+### Creating new components
+
+Before building any UI element inline, check if a component already exists in `components/ui/`. If it doesn't exist, **create it following the shadcn/ui standard**:
+
+- Minimal, composable, no app-specific logic
+- Accept a `className` or `containerClassName` prop to allow callers to override styles
+- Use `useThemeColors()` for any JS color values (icons, shadows)
+- Use NativeWind `className` for all styling — no `StyleSheet.create`
+- Export a typed `interface XxxProps` alongside the component
+- Place it in `components/ui/` if it's a base primitive with no business logic
+
+```tsx
+// Example: new primitive component
+export interface MyComponentProps {
+  className?: string;
+  // ...
+}
+export function MyComponent({ className, ...props }: MyComponentProps) { ... }
+```
+
 ### `components/ui/` — Base primitives
 
 These components have no app-specific logic. They form the design system.
@@ -151,6 +171,22 @@ These components have no app-specific logic. They form the design system.
 ```
 
 **Never use `TouchableOpacity` directly** — always use `Button` (with `unstyled` if needed for custom layouts).
+
+#### `Input`
+
+```tsx
+<Input
+  label="Email"               // optional — omit for search fields
+  icon={AtSign}               // lucide icon shown on the left
+  placeholder="..."
+  error={errors.email?.message}
+  rightLabel={<Button variant="link">...</Button>}  // optional right element in label row
+  containerClassName="rounded-full"                 // override input container styles
+  // ...all TextInputProps
+/>
+```
+
+Use `containerClassName` to customise shape (e.g. `rounded-full` for search bars). Always use `Controller` from react-hook-form — never uncontrolled refs in React Native.
 
 #### `Card`
 
@@ -193,12 +229,24 @@ Icon color is resolved automatically from the variant via `useThemeColors()`.
 </Screen>
 ```
 
+#### `BottomSheet`
+
+```tsx
+<BottomSheet visible={isOpen} onClose={() => setIsOpen(false)}>
+  {/* content */}
+</BottomSheet>
+```
+
+Animated bottom sheet with backdrop fade, spring open/close, and drag-to-close (handle bar draggable). `onClose` is called after the close animation completes — do not call it eagerly inside the sheet. Uses Reanimated + RNGH internally — do not wrap in another `GestureHandlerRootView` (one is already in `app/_layout.tsx`).
+
 ### `components/` — Complex app components
 
 These components contain app-specific logic or composition.
 
 - **`AppHeader`**: Page header with title + Bell icon. Uses `useThemeColors` for icon color.
 - **`CustomTabBar`**: Custom bottom tab navigator. Uses platform-specific background opacity.
+- **`FabMenu`**: Expandable floating action button with navigation actions. Receives `expanded` + `onToggle` props.
+- **`ScreenTitle`**: Page title + optional subtitle + optional action node. Accepts `titleClassName` to override the title style.
 
 ---
 
@@ -223,10 +271,10 @@ Two font families loaded in `app/_layout.tsx`:
 
 ## Feature Structure Pattern
 
-Each feature in `src/features/` follows this structure:
+Each feature in `features/` follows this structure:
 
 ```
-src/features/[feature]/
+features/[feature]/
 ├── screens/        # Full-page components (imported by app/ route files)
 ├── components/     # Feature-specific UI components
 ├── hooks/          # Feature-specific hooks
@@ -238,14 +286,14 @@ The `app/` route file should be minimal — it just imports and renders the scre
 
 ```tsx
 // app/(tabs)/index.tsx
-import HomeScreen from "@/src/features/home/screens/home-screen";
+import HomeScreen from "@/features/home/screens/home-screen";
 export default HomeScreen;
 ```
 
 The screen composes the layout using `Screen`, `AppHeader`, and feature components:
 
 ```tsx
-// src/features/home/screens/home-screen.tsx
+// features/home/screens/home-screen.tsx
 export default function HomeScreen() {
   return (
     <Screen header={<AppHeader title="..." />} fab={<FabMenu />}>
@@ -274,6 +322,20 @@ export default function HomeScreen() {
 
 5. **No conflicting `bg-*` classes**: If `Card` or another component already sets a background, don't add a second `bg-*` in the same className string — NativeWind may not resolve the conflict correctly on native. Instead, set the background only once (in the outermost className).
 
+6. **Always use `cn()` for conditional or composed classNames** — never template literals or manual `.filter(Boolean).join(" ")`. Import from `@/lib/utils`.
+
+   ```tsx
+   // ✅ correct
+   className={cn("base-class", isActive && "active-class", variant === "primary" ? "bg-primary" : "bg-muted")}
+
+   // ❌ wrong
+   className={`base-class ${isActive ? "active-class" : ""}`}
+   ```
+
+7. **All code comments must be in English.** UI strings (labels, placeholders, error messages) remain in Spanish as they are user-facing content.
+
+8. **Screens use `Screen` + `AppHeader`**, never `SafeAreaView` directly. `SafeAreaView` is only used inside `AuthScreen` for auth flows.
+
 ---
 
 ## Routing
@@ -295,11 +357,11 @@ export default function HomeScreen() {
 
 ### Architecture
 
-Auth state lives in `AuthProvider` (`src/features/auth/context/auth-context.tsx`), mounted at the root in `app/_layout.tsx`. Never add auth logic outside this provider.
+Auth state lives in `AuthProvider` (`features/auth/context/auth-context.tsx`), mounted at the root in `app/_layout.tsx`. Never add auth logic outside this provider.
 
 ```
 lib/supabase.ts              → Supabase client (implicit OAuth flow, localStorage storage)
-src/features/auth/
+features/auth/
   context/auth-context.tsx   → Session state + all auth methods
   schemas/auth-schemas.ts    → Zod schemas (loginSchema, registerSchema, forgotPasswordSchema)
   components/auth-screen.tsx → Base layout (SafeAreaView + KAV + ScrollView) for all auth screens
@@ -375,7 +437,7 @@ signInWithGoogle()
 
 ### AuthScreen layout component
 
-All auth screens use `AuthScreen` from `src/features/auth/components/auth-screen.tsx` instead of managing layout manually. It handles `SafeAreaView` + `KeyboardAvoidingView` + `ScrollView` with the correct `keyboardVerticalOffset` using `useSafeAreaInsets()`.
+All auth screens use `AuthScreen` from `features/auth/components/auth-screen.tsx` instead of managing layout manually. It handles `SafeAreaView` + `KeyboardAvoidingView` + `ScrollView` with the correct `keyboardVerticalOffset` using `useSafeAreaInsets()`.
 
 ```tsx
 // Screens with few fields — content centered vertically
@@ -401,6 +463,7 @@ All auth screens use `AuthScreen` from `src/features/auth/components/auth-screen
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Button } from "@/components/ui/button";
 import { lightTokens } from "@/lib/theme-tokens";
+import HomeScreen from "@/features/home/screens/home-screen";
 ```
 
 ---
@@ -432,11 +495,20 @@ const colors = useThemeColors();
 
 ---
 
+## Reanimated / Gesture Handler
+
+- `GestureHandlerRootView` is already at the root in `app/_layout.tsx` — do not add another one
+- The exception is inside `Modal` components (which render outside the root tree) — `BottomSheet` already handles this internally
+- Values shared between the JS thread and Reanimated worklets (UI thread) must use `useSharedValue`, not `useRef` — plain refs cannot be mutated from worklet callbacks
+
+---
+
 ## What NOT to do
 
-- Do not use `Colors` from `@/constants/theme` — use `useThemeColors()` instead
 - Do not use `TouchableOpacity` directly — use `<Button unstyled>` instead
 - Do not add `bg-card` inside the `Card` component itself — the caller passes the background
 - Do not use `useColorScheme` + conditional color logic — use `useThemeColors()` which handles this
 - Do not add colors to `tailwind.config.js` — add them to `lib/theme-tokens.ts` first, then the config references `var(--token-name)`
 - Do not use emoji or non-Lucide icons — always use `lucide-react-native`
+- Do not use `SafeAreaView` directly in tab screens — use `Screen` instead
+- Do not reference `src/features/` — the features directory is at the project root: `features/`
