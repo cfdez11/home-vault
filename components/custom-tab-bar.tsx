@@ -4,9 +4,9 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import {
   Briefcase,
   Building2,
+  ClipboardList,
   LayoutDashboard,
   LucideIcon,
-  User,
 } from "lucide-react-native";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -21,7 +21,7 @@ const TABS: TabConfig[] = [
   { name: "index", label: "Inicio", icon: LayoutDashboard },
   { name: "propiedades", label: "Propiedades", icon: Building2 },
   { name: "empresas", label: "Empresas", icon: Briefcase },
-  { name: "perfil", label: "Perfil", icon: User },
+  { name: "incidencias", label: "Incidencias", icon: ClipboardList },
 ];
 
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
