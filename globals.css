@@ -48,6 +48,10 @@
   --warning: #d97706;
   --warning-foreground: #0f172a;
   --warning-subtle: #fef3c7;
+
+  --caution: #ca8a04;
+  --caution-foreground: #0f172a;
+  --caution-subtle: #fef9c3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -90,5 +94,9 @@
     --warning: #fcd34d;
     --warning-foreground: #0f172a;
     --warning-subtle: #78350f;
+
+    --caution: #fde047;
+    --caution-foreground: #0f172a;
+    --caution-subtle: #713f12;
   }
 }

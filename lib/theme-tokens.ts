@@ -44,6 +44,10 @@ export const lightTokens = {
   warning: '#D97706',
   warningForeground: '#0F172A',
   warningSubtle: '#FEF3C7',
+
+  caution: '#CA8A04',
+  cautionForeground: '#0F172A',
+  cautionSubtle: '#FEF9C3',
 } as const;
 
 export const darkTokens = {
@@ -85,6 +89,10 @@ export const darkTokens = {
   warning: '#FCD34D',
   warningForeground: '#0F172A',
   warningSubtle: '#78350F',
+
+  caution: '#FDE047',
+  cautionForeground: '#0F172A',
+  cautionSubtle: '#713F12',
 } as const;
 
 export type ThemeTokens = typeof lightTokens;

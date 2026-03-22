@@ -66,6 +66,12 @@ module.exports = {
           foreground: 'var(--warning-foreground)',
           subtle: 'var(--warning-subtle)',
         },
+
+        caution: {
+          DEFAULT: 'var(--caution)',
+          foreground: 'var(--caution-foreground)',
+          subtle: 'var(--caution-subtle)',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',    /* 24px — cards, modals */

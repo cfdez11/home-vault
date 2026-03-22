@@ -14,6 +14,10 @@ export type BadgeVariant =
   | "success-subtle"
   | "accent"
   | "accent-subtle"
+  | "warning"
+  | "warning-subtle"
+  | "caution"
+  | "caution-subtle"
   | "muted"
   | "card"
   | "outline";
@@ -40,6 +44,10 @@ const containerVariantClass: Record<BadgeVariant, string> = {
   "success-subtle": "bg-success-subtle",
   accent: "bg-accent",
   "accent-subtle": "bg-accent-subtle",
+  warning: "bg-warning",
+  "warning-subtle": "bg-warning-subtle",
+  caution: "bg-caution",
+  "caution-subtle": "bg-caution-subtle",
   muted: "bg-muted",
   card: "bg-card",
   outline: "bg-transparent border border-border",
@@ -54,6 +62,10 @@ const textVariantClass: Record<BadgeVariant, string> = {
   "success-subtle": "text-success",
   accent: "text-accent-foreground",
   "accent-subtle": "text-accent",
+  warning: "text-warning-foreground",
+  "warning-subtle": "text-warning",
+  caution: "text-caution-foreground",
+  "caution-subtle": "text-caution",
   muted: "text-muted-foreground",
   card: "text-primary",
   outline: "text-foreground",
@@ -61,7 +73,7 @@ const textVariantClass: Record<BadgeVariant, string> = {
 
 const containerSizeClass: Record<BadgeSize, string> = {
   sm: "px-2.5 py-1 gap-1",
-  default: "px-3 py-1.5 gap-1.5",
+  default: "px-3 py-1 gap-1.5",
 };
 
 const textSizeClass: Record<BadgeSize, string> = {
@@ -87,6 +99,10 @@ function useIconColor(variant: BadgeVariant): string {
     "success-subtle": c.success,
     accent: c.accentForeground,
     "accent-subtle": c.accent,
+    warning: c.warningForeground,
+    "warning-subtle": c.warning,
+    caution: c.cautionForeground,
+    "caution-subtle": c.caution,
     muted: c.mutedForeground,
     card: c.primary,
     outline: c.foreground,
