@@ -36,11 +36,11 @@ interface CardSectionProps {
 }
 
 export function CardHeader({ children, className }: CardSectionProps) {
-  return <View className={cn("px-4 pt-4 pb-2", className)}>{children}</View>;
+  return <View className={cn("px-4 pt-4", className)}>{children}</View>;
 }
 
 export function CardContent({ children, className }: CardSectionProps) {
-  return <View className={cn("px-4 py-3", className)}>{children}</View>;
+  return <View className={cn("px-4 py-2", className)}>{children}</View>;
 }
 
 export function CardFooter({ children, className }: CardSectionProps) {
