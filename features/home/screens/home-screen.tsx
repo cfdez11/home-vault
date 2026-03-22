@@ -1,7 +1,7 @@
 import { AppHeader } from "@/components/app-header";
 import { Screen } from "@/components/ui/screen";
 import { useState } from "react";
-import { FabMenu } from "../components/fab-menu";
+import { FabMenu } from "@/components/fab-menu";
 import { PropertiesSection } from "../components/properties-section";
 import { SummarySection } from "../components/summary-section";
 import { WelcomeHeader } from "../components/welcome-header";

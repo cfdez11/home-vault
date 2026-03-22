@@ -18,6 +18,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
 import { NativewindThemeProvider } from "@/components/ui/nativewind-theme-provider";
@@ -47,6 +48,7 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <NativewindThemeProvider>
         <AuthProvider>
@@ -82,5 +84,6 @@ export default function RootLayout() {
         </AuthProvider>
       </NativewindThemeProvider>
     </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

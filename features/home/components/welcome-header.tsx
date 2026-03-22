@@ -1,5 +1,4 @@
-import { ScreenSection } from "@/components/ui/screen";
-import { Text } from "react-native";
+import { ScreenTitle } from "@/components/screen-title";
 
 interface WelcomeHeaderProps {
   name: string;
@@ -7,12 +6,5 @@ interface WelcomeHeaderProps {
 }
 
 export function WelcomeHeader({ name, subtitle }: WelcomeHeaderProps) {
-  return (
-    <ScreenSection>
-      <Text className="text-3xl font-manrope-extrabold text-primary">
-        Hola, {name}
-      </Text>
-      <Text className="text-lg text-muted-foreground">{subtitle}</Text>
-    </ScreenSection>
-  );
+  return <ScreenTitle title={`Hola, ${name}`} subtitle={subtitle} />;
 }
