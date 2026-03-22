@@ -67,7 +67,7 @@ export function CompanyListCard({
       </CardHeader>
 
       {/* Contact info */}
-      <CardContent className="gap-4">
+      <CardContent className="gap-2">
         <Button
           unstyled
           onPress={handleCall}
