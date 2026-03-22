@@ -1,4 +1,5 @@
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { cn } from "@/lib/utils";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import {
   Briefcase,
@@ -57,7 +58,10 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
               key={tab.name}
               onPress={onPress}
               activeOpacity={0.8}
-              className={`flex-1 items-center justify-center px-3 py-2 rounded-2xl gap-[3px] ${isFocused ? "bg-primary" : ""}`}
+              className={cn(
+                "flex-1 items-center justify-center px-3 py-2 rounded-2xl gap-[3px]",
+                isFocused && "bg-primary"
+              )}
             >
               <Icon
                 size={22}
@@ -66,7 +70,10 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                 }
               />
               <Text
-                className={`text-[9px] font-semibold uppercase tracking-[0.8px] ${isFocused ? "text-primary-foreground" : "text-muted-foreground"}`}
+                className={cn(
+                  "text-[9px] font-semibold uppercase tracking-[0.8px]",
+                  isFocused ? "text-primary-foreground" : "text-muted-foreground"
+                )}
               >
                 {tab.label}
               </Text>

@@ -1,4 +1,5 @@
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { cn } from "@/lib/utils";
 import React from "react";
 import {
   ActivityIndicator,
@@ -103,15 +104,13 @@ export function Button({
 
   const computedClassName = unstyled
     ? className
-    : [
+    : cn(
         "flex-row items-center justify-center",
         containerVariantClass[variant],
         containerSizeClass[size],
-        disabled || loading ? "opacity-50" : "",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ");
+        (disabled || loading) && "opacity-50",
+        className
+      );
 
   return (
     <TouchableOpacity
@@ -126,7 +125,7 @@ export function Button({
       )}
       {typeof children === "string" ? (
         <Text
-          className={`font-inter-semibold ${textVariantClass[variant]} ${textSizeClass[size]}`}
+          className={cn("font-inter-semibold", textVariantClass[variant], textSizeClass[size])}
         >
           {children}
         </Text>

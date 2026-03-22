@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,6 +34,7 @@ export function Screen({ children, header, fab }: ScreenProps) {
 
 interface ScreenSectionProps {
   children?: React.ReactNode;
+  className?: string;
   title?: string;
   action?: React.ReactNode;
   /**
@@ -45,13 +47,14 @@ interface ScreenSectionProps {
 }
 
 export function ScreenSection({
+  className,
   children,
   title,
   action,
   padded = true,
 }: ScreenSectionProps) {
   return (
-    <View className="mb-6">
+    <View className={cn("mb-6", className)}>
       {(title || action) && (
         <View className="flex-row justify-between items-center px-5 mb-3">
           {title ? <SectionTitle>{title}</SectionTitle> : <View />}

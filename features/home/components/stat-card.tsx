@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Text, View } from "react-native";
 
 interface StatCardProps {
@@ -21,15 +22,15 @@ export function StatCard({
   labelClassName,
 }: StatCardProps) {
   return (
-    <Card className={`flex-1 p-4 ${containerClassName}`}>
+    <Card className={cn("flex-1 p-4", containerClassName)}>
       <View className="flex-row justify-between items-center">
         {icon}
         {indicator}
       </View>
-      <Text className={`text-[36px] mt-3 leading-none font-manrope-extrabold ${valueClassName}`}>
+      <Text className={cn("text-[36px] mt-3 leading-none font-manrope-extrabold", valueClassName)}>
         {value}
       </Text>
-      <Text className={`text-[13px] mt-1 leading-[18px] font-inter-medium ${labelClassName}`}>
+      <Text className={cn("text-[13px] mt-1 leading-[18px] font-inter-medium", labelClassName)}>
         {label}
       </Text>
     </Card>

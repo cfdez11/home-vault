@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import React from "react";
 import { Text, View } from "react-native";
@@ -107,25 +108,21 @@ export function Badge({
 
   return (
     <View
-      className={[
+      className={cn(
         "flex-row items-center rounded-full",
         containerVariantClass[variant],
         containerSizeClass[size],
         className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      )}
     >
       {Icon && <Icon size={iconSizeMap[size]} color={iconColor} />}
       <Text
-        className={[
+        className={cn(
           "font-inter-semibold",
           textVariantClass[variant],
           textSizeClass[size],
-          uppercase ? "tracking-wider uppercase" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          uppercase && "tracking-wider uppercase",
+        )}
       >
         {children}
       </Text>
