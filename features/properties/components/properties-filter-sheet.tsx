@@ -25,11 +25,10 @@ function FilterSectionLabel({ children }: { children: string }) {
 // ─── Property type ────────────────────────────────────────────────────────────
 
 const PROPERTY_TYPES: { value: PropertyType; label: string }[] = [
-  { value: "apartamento", label: "Apartamento" },
-  { value: "casa", label: "Casa" },
-  { value: "condominio", label: "Condominio" },
-  { value: "chalet", label: "Chalet" },
-  { value: "otros", label: "Otros" },
+  { value: "apartment", label: "Apartamento" },
+  { value: "house", label: "Casa" },
+  { value: "condominium", label: "Condominio" },
+  { value: "other", label: "Otros" },
 ];
 
 interface TypeChipProps {
@@ -63,7 +62,7 @@ const INCIDENT_OPTIONS: {
 }[] = [
   { value: "none", label: "Sin incidencias", Icon: CheckCircle2 },
   { value: "open", label: "Con incidencias abiertas", Icon: AlertCircle },
-  { value: "solved", label: "Recientemente solventadas", Icon: History },
+  { value: "resolved", label: "Recientemente solventadas", Icon: History },
 ];
 
 interface IncidentOptionProps {

@@ -1,11 +1,8 @@
-export type PropertyType =
-  | "apartamento"
-  | "casa"
-  | "condominio"
-  | "chalet"
-  | "otros";
+// Matches DB enum: property_type
+export type PropertyType = "apartment" | "house" | "condominium" | "other";
 
-export type IncidentStatus = "none" | "open" | "solved" | null;
+// Filter-only concept (not stored in DB)
+export type IncidentStatus = "none" | "open" | "resolved" | null;
 
 export interface PropertyFilters {
   types: PropertyType[];
