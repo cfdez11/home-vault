@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { Button } from "./button";
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
@@ -45,4 +45,26 @@ export function CardContent({ children, className }: CardSectionProps) {
 
 export function CardFooter({ children, className }: CardSectionProps) {
   return <View className={cn("px-4 pt-2 pb-4", className)}>{children}</View>;
+}
+
+export interface CardTitleProps extends React.ComponentProps<typeof Text> {
+  className?: string;
+}
+
+export function CardTitle({ className, ...props }: CardTitleProps) {
+  return (
+    <Text
+      className={cn("text-[18px] font-manrope-bold text-primary", className)}
+      {...props}
+    />
+  );
+}
+
+export function CardDescription({ className, ...props }: CardTitleProps) {
+  return (
+    <Text
+      className={cn("text-[13px] font-inter text-muted-foreground", className)}
+      {...props}
+    />
+  );
 }

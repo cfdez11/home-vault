@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { useThemeColors } from "@/hooks/use-theme-colors";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { Text, View } from "react-native";
 

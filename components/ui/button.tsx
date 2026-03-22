@@ -109,7 +109,7 @@ export function Button({
         containerVariantClass[variant],
         containerSizeClass[size],
         (disabled || loading) && "opacity-50",
-        className
+        className,
       );
 
   return (
@@ -125,7 +125,11 @@ export function Button({
       )}
       {typeof children === "string" ? (
         <Text
-          className={cn("font-inter-semibold", textVariantClass[variant], textSizeClass[size])}
+          className={cn(
+            "font-inter-semibold",
+            textVariantClass[variant],
+            textSizeClass[size],
+          )}
         >
           {children}
         </Text>
