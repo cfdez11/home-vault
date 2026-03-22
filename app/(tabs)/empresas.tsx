@@ -1,15 +1,15 @@
 import { AppHeader } from "@/components/app-header";
-import React from "react";
+import { Screen } from "@/components/ui/screen";
 import { Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CompaniesScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f9fb]">
-      <AppHeader title="Empresas" />
+    <Screen header={<AppHeader title="Empresas" />}>
       <View className="flex-1 items-center justify-center">
-        <Text className="text-sm text-[#444651] mt-2">Próximamente</Text>
+        <Text className="text-sm font-inter text-muted-foreground mt-2">
+          Próximamente
+        </Text>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
