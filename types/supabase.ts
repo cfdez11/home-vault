@@ -83,36 +83,36 @@ export type Database = {
       documents: {
         Row: {
           created_at: string | null
-          document_date: string
-          document_notes: string | null
-          document_title: string
-          document_type: Database["public"]["Enums"]["document_type"]
-          document_url: string
+          date: string
           id: number
+          notes: string | null
           property_id: number
+          title: string
+          type: Database["public"]["Enums"]["document_type"]
           updated_at: string | null
+          url: string
         }
         Insert: {
           created_at?: string | null
-          document_date: string
-          document_notes?: string | null
-          document_title: string
-          document_type: Database["public"]["Enums"]["document_type"]
-          document_url: string
+          date: string
           id?: never
+          notes?: string | null
           property_id: number
+          title: string
+          type: Database["public"]["Enums"]["document_type"]
           updated_at?: string | null
+          url: string
         }
         Update: {
           created_at?: string | null
-          document_date?: string
-          document_notes?: string | null
-          document_title?: string
-          document_type?: Database["public"]["Enums"]["document_type"]
-          document_url?: string
+          date?: string
           id?: never
+          notes?: string | null
           property_id?: number
+          title?: string
+          type?: Database["public"]["Enums"]["document_type"]
           updated_at?: string | null
+          url?: string
         }
         Relationships: [
           {
@@ -126,19 +126,19 @@ export type Database = {
       }
       incident_files: {
         Row: {
-          file_url: string
           id: number
           incident_id: number
+          url: string
         }
         Insert: {
-          file_url: string
           id?: never
           incident_id: number
+          url: string
         }
         Update: {
-          file_url?: string
           id?: never
           incident_id?: number
+          url?: string
         }
         Relationships: [
           {
@@ -152,45 +152,45 @@ export type Database = {
       }
       incidents: {
         Row: {
+          company: string | null
           company_id: number
+          cost: number | null
           created_at: string | null
+          date: string
+          description: string
           id: number
-          incident_company: string | null
-          incident_cost: number | null
-          incident_date: string
-          incident_description: string
-          incident_status: Database["public"]["Enums"]["incident_status"]
-          incident_title: string
           priority: Database["public"]["Enums"]["priority_level"] | null
           property_id: number
+          status: Database["public"]["Enums"]["incident_status"]
+          title: string
           updated_at: string | null
         }
         Insert: {
+          company?: string | null
           company_id: number
+          cost?: number | null
           created_at?: string | null
+          date: string
+          description: string
           id?: never
-          incident_company?: string | null
-          incident_cost?: number | null
-          incident_date: string
-          incident_description: string
-          incident_status: Database["public"]["Enums"]["incident_status"]
-          incident_title: string
           priority?: Database["public"]["Enums"]["priority_level"] | null
           property_id: number
+          status: Database["public"]["Enums"]["incident_status"]
+          title: string
           updated_at?: string | null
         }
         Update: {
+          company?: string | null
           company_id?: number
+          cost?: number | null
           created_at?: string | null
+          date?: string
+          description?: string
           id?: never
-          incident_company?: string | null
-          incident_cost?: number | null
-          incident_date?: string
-          incident_description?: string
-          incident_status?: Database["public"]["Enums"]["incident_status"]
-          incident_title?: string
           priority?: Database["public"]["Enums"]["priority_level"] | null
           property_id?: number
+          status?: Database["public"]["Enums"]["incident_status"]
+          title?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -212,37 +212,37 @@ export type Database = {
       }
       properties: {
         Row: {
+          address: string
           created_at: string | null
           id: number
-          property_address: string
-          property_name: string
+          name: string
           size: number | null
           type: Database["public"]["Enums"]["property_type"] | null
           updated_at: string | null
           user_id: number
-          year_purchased: number | null
+          year: number | null
         }
         Insert: {
+          address: string
           created_at?: string | null
           id?: never
-          property_address: string
-          property_name: string
+          name: string
           size?: number | null
           type?: Database["public"]["Enums"]["property_type"] | null
           updated_at?: string | null
           user_id: number
-          year_purchased?: number | null
+          year?: number | null
         }
         Update: {
+          address?: string
           created_at?: string | null
           id?: never
-          property_address?: string
-          property_name?: string
+          name?: string
           size?: number | null
           type?: Database["public"]["Enums"]["property_type"] | null
           updated_at?: string | null
           user_id?: number
-          year_purchased?: number | null
+          year?: number | null
         }
         Relationships: [
           {
@@ -295,10 +295,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      document_type: "escritura" | "seguro" | "factura" | "otros"
-      incident_status: "abierto" | "en_proceso" | "solucionado"
-      priority_level: "baja" | "media" | "alta"
-      property_type: "apartamento" | "casa" | "condominio" | "otro"
+      document_type: "deed" | "insurance" | "invoice" | "other"
+      incident_status: "open" | "in_progress" | "resolved"
+      priority_level: "low" | "medium" | "high"
+      property_type: "apartment" | "house" | "condominium" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -426,10 +426,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      document_type: ["escritura", "seguro", "factura", "otros"],
-      incident_status: ["abierto", "en_proceso", "solucionado"],
-      priority_level: ["baja", "media", "alta"],
-      property_type: ["apartamento", "casa", "condominio", "otro"],
+      document_type: ["deed", "insurance", "invoice", "other"],
+      incident_status: ["open", "in_progress", "resolved"],
+      priority_level: ["low", "medium", "high"],
+      property_type: ["apartment", "house", "condominium", "other"],
     },
   },
 } as const
