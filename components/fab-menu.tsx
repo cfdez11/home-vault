@@ -50,17 +50,17 @@ export function FabMenu({ expanded, onToggle }: FabMenuProps) {
           <FabAction
             icon={<BellPlus size={18} color={colors.primary} />}
             label="Añadir Incidencia"
-            onPress={() => router.push('/incidencias/new' as any)}
+            onPress={() => { onToggle(); router.push('/incidents/new' as any); }}
           />
           <FabAction
             icon={<Building2 size={18} color={colors.primary} />}
             label="Añadir Propiedad"
-            onPress={() => router.push('/(tabs)/propiedades')}
+            onPress={() => { onToggle(); router.push('/(tabs)/properties/new'); }}
           />
           <FabAction
             icon={<Briefcase size={18} color={colors.primary} />}
             label="Añadir Empresa"
-            onPress={() => router.push('/(tabs)/empresas')}
+            onPress={() => { onToggle(); router.push('/companies/new' as any); }}
           />
         </View>
       )}

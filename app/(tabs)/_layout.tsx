@@ -14,10 +14,10 @@ export default function TabLayout() {
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index" options={{ title: "Dashboard" }} />
-      <Tabs.Screen name="propiedades" options={{ title: "Propiedades" }} />
-      <Tabs.Screen name="empresas" options={{ title: "Empresas" }} />
-      <Tabs.Screen name="incidencias" options={{ title: "Incidencias" }} />
-      <Tabs.Screen name="perfil" options={{ href: null, title: "Perfil" }} />
+      <Tabs.Screen name="properties" options={{ title: "Properties" }} />
+      <Tabs.Screen name="companies" options={{ title: "Companies" }} />
+      <Tabs.Screen name="incidents" options={{ title: "Incidents" }} />
+      <Tabs.Screen name="profile" options={{ href: null, title: "Profile" }} />
       <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );

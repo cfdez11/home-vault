@@ -1,6 +1,7 @@
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { cn } from "@/lib/utils";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useRouter } from "expo-router";
 import {
   Briefcase,
   Building2,
@@ -13,20 +14,22 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type TabConfig = {
   name: string;
+  href: string;
   label: string;
   icon: LucideIcon;
 };
 
 const TABS: TabConfig[] = [
-  { name: "index", label: "Inicio", icon: LayoutDashboard },
-  { name: "propiedades", label: "Propiedades", icon: Building2 },
-  { name: "empresas", label: "Empresas", icon: Briefcase },
-  { name: "incidencias", label: "Incidencias", icon: ClipboardList },
+  { name: "index", href: "/(tabs)/", label: "Inicio", icon: LayoutDashboard },
+  { name: "properties", href: "/(tabs)/properties", label: "Propiedades", icon: Building2 },
+  { name: "companies", href: "/(tabs)/companies", label: "Empresas", icon: Briefcase },
+  { name: "incidents", href: "/(tabs)/incidents", label: "Incidencias", icon: ClipboardList },
 ];
 
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
+  const router = useRouter();
 
   return (
     <View
@@ -48,8 +51,10 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
               target: state.routes[index]?.key,
               canPreventDefault: true,
             });
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(state.routes[index]?.name ?? tab.name);
+            if (!event.defaultPrevented) {
+              // router.navigate unwinds any nested stack back to the index screen,
+              // whereas navigation.navigate preserves the nested stack state.
+              router.navigate(tab.href as any);
             }
           };
 
