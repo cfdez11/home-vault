@@ -88,6 +88,14 @@ function ThemedApp() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="companies/new"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="companies/[id]/edit"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="modal"
               options={{ presentation: "modal", title: "Modal" }}
             />
