@@ -1,4 +1,5 @@
 import { ScreenSection } from "@/components/ui/screen";
+import { useRouter } from "expo-router";
 import { View } from "react-native";
 import type { PropertyType } from "../types";
 import { PropertyListCard } from "./property-list-card";
@@ -6,11 +7,8 @@ import { PropertyListCard } from "./property-list-card";
 export interface Property {
   id: string;
   name: string;
-  year: string;
   address: string;
-  imageBgColor: string;
   type?: PropertyType;
-  featured?: boolean;
   incidents?: number;
   docsCount: number;
 }
@@ -20,11 +18,17 @@ interface PropertiesListProps {
 }
 
 export function PropertiesList({ properties }: PropertiesListProps) {
+  const router = useRouter();
+
   return (
     <ScreenSection padded={false}>
       <View className="gap-4">
         {properties.map((property) => (
-          <PropertyListCard key={property.id} {...property} />
+          <PropertyListCard
+            key={property.id}
+            {...property}
+            onPress={() => router.push(`/(tabs)/properties/${property.id}` as any)}
+          />
         ))}
       </View>
     </ScreenSection>

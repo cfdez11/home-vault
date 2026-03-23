@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ScreenSection } from "@/components/ui/screen";
-import { lightTokens } from "@/lib/theme-tokens";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { PropertyCard } from "./property-card";
@@ -9,20 +8,14 @@ const DEMO_PROPERTIES = [
   {
     id: "1",
     name: "Apartamento Centro",
-    year: "2018",
     address: "Calle Mayor 12, 4B, Madrid",
-    imageBgColor: lightTokens.primarySubtle,
-    tagLabel: "Centro",
     incidents: 3,
     docsCount: 12,
   },
   {
     id: "2",
     name: "Casa Campo",
-    year: "2021",
     address: "Camino Real s/n, Pedraza",
-    imageBgColor: lightTokens.successSubtle,
-    tagLabel: "Rural",
     incidents: 0,
     docsCount: 8,
   },
@@ -38,7 +31,7 @@ export function PropertiesSection() {
         <Button
           variant="link"
           size="sm"
-          onPress={() => router.navigate("/propiedades")}
+          onPress={() => router.navigate("/(tabs)/properties")}
         >
           Ver todas
         </Button>
@@ -47,7 +40,11 @@ export function PropertiesSection() {
     >
       <View className="gap-4">
         {DEMO_PROPERTIES.map((property) => (
-          <PropertyCard key={property.id} {...property} />
+          <PropertyCard
+            key={property.id}
+            {...property}
+            onPress={() => router.push(`/(tabs)/properties/${property.id}` as any)}
+          />
         ))}
       </View>
     </ScreenSection>

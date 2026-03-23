@@ -12,14 +12,11 @@ import {
   Folder,
   MapPin,
 } from "lucide-react-native";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 interface PropertyListCardProps {
   name: string;
-  year: string;
   address: string;
-  imageBgColor: string;
-  featured?: boolean;
   incidents?: number;
   docsCount: number;
   onPress?: () => void;
@@ -28,10 +25,7 @@ interface PropertyListCardProps {
 
 export function PropertyListCard({
   name,
-  year,
   address,
-  imageBgColor,
-  featured,
   incidents,
   docsCount,
   onPress,
@@ -41,25 +35,8 @@ export function PropertyListCard({
 
   return (
     <Card onPress={onPress} className={className}>
-      {/* Image — inset with rounded corners */}
-      <View
-        className="mx-3 mt-3 h-[180px] rounded-md overflow-hidden"
-        style={{ backgroundColor: imageBgColor }}
-      >
-        {featured && (
-          <Badge variant="card" className="absolute top-3 right-3">
-            Destacado
-          </Badge>
-        )}
-      </View>
-
-      <CardContent className="pt-3 pb-4 gap-1.5">
-        <View className="flex-row justify-between items-baseline">
-          <CardTitle className="flex-1 mr-2">{name}</CardTitle>
-          <Text className="text-[13px] font-inter-medium text-primary">
-            {year}
-          </Text>
-        </View>
+      <CardContent className="pt-4 pb-4 gap-1.5">
+        <CardTitle>{name}</CardTitle>
 
         <View className="flex-row items-center gap-1">
           <MapPin size={13} color={colors.mutedForeground} />
