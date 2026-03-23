@@ -9,7 +9,8 @@
   --radius-sm: 0.75rem; /* 12px — buttons, inputs */
 
   /* Core - shadcn naming */
-  --background: #F8FAFC;
+  --background: #f6f9fc;
+
   --foreground: #0f172a;
 
   --card: #ffffff;

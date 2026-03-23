@@ -23,7 +23,10 @@ import "react-native-reanimated";
 
 import { NativewindThemeProvider } from "@/components/ui/nativewind-theme-provider";
 import { AuthProvider } from "@/features/auth/context/auth-context";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import {
+  ThemePreferenceProvider,
+  useThemePreference,
+} from "@/lib/theme-preference-context";
 
 import "../globals.css";
 
@@ -32,8 +35,6 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   const [fontsLoaded] = useFonts({
     Manrope_400Regular,
     Manrope_500Medium,
@@ -49,7 +50,18 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemePreferenceProvider>
+        <ThemedApp />
+      </ThemePreferenceProvider>
+    </GestureHandlerRootView>
+  );
+}
+
+function ThemedApp() {
+  const { effectiveScheme } = useThemePreference();
+
+  return (
+    <ThemeProvider value={effectiveScheme === "dark" ? DarkTheme : DefaultTheme}>
       <NativewindThemeProvider>
         <AuthProvider>
           <Stack>
@@ -68,11 +80,11 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="propiedades/[id]/incidencias"
+              name="incidents/new"
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="incidencias/[id]/edit"
+              name="incidents/[id]/edit"
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -84,6 +96,5 @@ export default function RootLayout() {
         </AuthProvider>
       </NativewindThemeProvider>
     </ThemeProvider>
-    </GestureHandlerRootView>
   );
 }

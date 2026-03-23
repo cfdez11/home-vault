@@ -6,7 +6,8 @@
  */
 
 export const lightTokens = {
-  background: '#F8FAFC',
+  // background: '#F8FAFC',
+  background: '#F6F9FC',
   foreground: '#0F172A',
 
   card: '#FFFFFF',
@@ -23,6 +24,8 @@ export const lightTokens = {
   secondaryForeground: '#F8FAFC',
 
   muted: '#F1F5F9',
+  // muted: '#E8EDF2',
+
   mutedForeground: '#64748B',
 
   accent: '#0EA5E9',

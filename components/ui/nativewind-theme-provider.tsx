@@ -1,7 +1,7 @@
 import React from 'react';
 import { vars } from 'nativewind';
 import { View } from 'react-native';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useThemePreference } from '@/lib/theme-preference-context';
 import { lightTokens, darkTokens, ThemeTokens } from '@/lib/theme-tokens';
 
 function toVars(tokens: ThemeTokens): Record<string, string> {
@@ -21,9 +21,9 @@ const lightVars = vars(toVars(lightTokens));
 const darkVars = vars(toVars(darkTokens));
 
 export function NativewindThemeProvider({ children }: { children: React.ReactNode }) {
-  const scheme = useColorScheme();
+  const { effectiveScheme } = useThemePreference();
   return (
-    <View style={[{ flex: 1 }, scheme === 'dark' ? darkVars : lightVars]}>
+    <View style={[{ flex: 1 }, effectiveScheme === 'dark' ? darkVars : lightVars]}>
       {children}
     </View>
   );
