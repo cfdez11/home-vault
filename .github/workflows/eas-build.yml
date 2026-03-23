@@ -75,5 +75,4 @@ jobs:
             --profile ${{ steps.inputs.outputs.profile }} \
             --non-interactive
         env:
-          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
-          EXPO_PUBLIC_SUPABASE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_KEY }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
