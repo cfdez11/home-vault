@@ -8,6 +8,12 @@
     "scheme": "homevault",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "updates": {
+      "url": "https://u.expo.dev/8eedca4f-3ccc-4744-ac45-1ebf587003e1"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.homevault",

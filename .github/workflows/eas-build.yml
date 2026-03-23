@@ -1,0 +1,79 @@
+name: EAS Build
+
+# Triggers:
+#   - Manual (workflow_dispatch): choose platform and profile
+#   - Git tag v*.*.*: always builds production for all platforms
+#
+# Prerequisites:
+#   - GitHub secrets set: EXPO_TOKEN, EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_KEY
+#   - For auto-submit: ASC_API_KEY_ID, ASC_API_KEY_ISSUER_ID, ASC_API_KEY_CONTENT (iOS)
+#                      GOOGLE_SERVICE_ACCOUNT_KEY_JSON (Android)
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - ios
+          - android
+      profile:
+        description: Build profile
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - production
+
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    name: EAS Build (${{ github.event_name == 'push' && 'production / all' || format('{0} / {1}', inputs.profile, inputs.platform) }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Resolve build inputs
+        id: inputs
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "platform=all"   >> $GITHUB_OUTPUT
+            echo "profile=production" >> $GITHUB_OUTPUT
+          else
+            echo "platform=${{ inputs.platform }}" >> $GITHUB_OUTPUT
+            echo "profile=${{ inputs.profile }}"   >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build
+        run: |
+          eas build \
+            --platform ${{ steps.inputs.outputs.platform }} \
+            --profile ${{ steps.inputs.outputs.profile }} \
+            --non-interactive
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_KEY }}
