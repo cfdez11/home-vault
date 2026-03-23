@@ -49,6 +49,7 @@ export interface IncidentListCardProps {
   priority: PriorityLevel | null;
   date: string;
   cost: number | null;
+  companyName?: string | null;
   onPress?: () => void;
   className?: string;
 }
@@ -60,6 +61,7 @@ export function IncidentListCard({
   priority,
   date,
   cost,
+  companyName,
   onPress,
   className = "mx-5 bg-card",
 }: IncidentListCardProps) {
@@ -89,9 +91,16 @@ export function IncidentListCard({
       </CardContent>
 
       <CardFooter className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-2">
-          <CalendarDays size={13} color={colors.mutedForeground} />
-          <CardDescription>{formatDate(date)}</CardDescription>
+        <View className="gap-1">
+          <View className="flex-row items-center gap-2">
+            <CalendarDays size={13} color={colors.mutedForeground} />
+            <CardDescription>{formatDate(date)}</CardDescription>
+          </View>
+          {companyName && (
+            <CardDescription numberOfLines={1} className="max-w-[200px]">
+              {companyName}
+            </CardDescription>
+          )}
         </View>
         {cost != null && (
           <Text className="text-[15px] font-manrope-bold text-primary">
