@@ -1,7 +1,10 @@
 import { cn } from "@/lib/utils";
-import React from "react";
-import { ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { SectionTitle } from "./section-title";
 
 // ─── Screen ──────────────────────────────────────────────────────────────────
@@ -10,20 +13,49 @@ interface ScreenProps {
   children: React.ReactNode;
   header?: React.ReactNode;
   fab?: React.ReactNode;
+  keyboardAvoiding?: boolean;
+  scrollViewRef?: React.RefObject<ScrollView | null>;
 }
 
-export function Screen({ children, header, fab }: ScreenProps) {
+export function Screen({
+  children,
+  header,
+  fab,
+  keyboardAvoiding = false,
+  scrollViewRef,
+}: ScreenProps) {
+  const insets = useSafeAreaInsets();
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  const scrollView = (
+    <ScrollView
+      ref={scrollViewRef}
+      className="flex-1"
+      contentContainerStyle={{ paddingBottom: 140 }}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
+      {children}
+    </ScrollView>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-background">
-      {header}
+      <View onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}>
+        {header}
+      </View>
       <View className="flex-1">
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingBottom: 140 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {children}
-        </ScrollView>
+        {keyboardAvoiding ? (
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={insets.top + headerHeight}
+          >
+            {scrollView}
+          </KeyboardAvoidingView>
+        ) : (
+          scrollView
+        )}
         {fab}
       </View>
     </SafeAreaView>

@@ -21,6 +21,8 @@ export function Input({
 }: InputProps) {
   const colors = useThemeColors();
 
+  const isMultiline = !!textInputProps.multiline;
+
   return (
     <View className="gap-1.5">
       {(label || rightLabel) && (
@@ -36,12 +38,19 @@ export function Input({
 
       <View
         className={cn(
-          "flex-row items-center bg-muted rounded-sm px-4 h-[52px] gap-3",
+          "flex-row bg-muted rounded-sm px-4 gap-3",
+          isMultiline ? "items-start min-h-[120px] h-auto py-4" : "items-center h-[52px]",
           error && "border border-destructive",
           containerClassName
         )}
       >
-        {Icon && <Icon size={18} color={error ? colors.destructive : colors.mutedForeground} />}
+        {Icon && (
+          <Icon
+            size={18}
+            color={error ? colors.destructive : colors.mutedForeground}
+            style={isMultiline ? { marginTop: 1 } : undefined}
+          />
+        )}
         <TextInput
           className="flex-1 text-[15px] font-inter text-foreground"
           placeholderTextColor={colors.mutedForeground}

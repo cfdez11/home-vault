@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, Modal, Pressable, ScrollView, View } from "react-native";
+import { Dimensions, Keyboard, Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -23,14 +23,17 @@ export interface BottomSheetProps {
   visible: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  keyboardAvoiding?: boolean;
 }
 
-export function BottomSheet({ visible, onClose, children }: BottomSheetProps) {
+export function BottomSheet({ visible, onClose, children, keyboardAvoiding = false }: BottomSheetProps) {
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false);
 
   const translateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
+  // Tracks keyboard height as a margin on the sheet — more reliable than KAV inside Modal
+  const keyboardMargin = useSharedValue(0);
 
   // Stable ref so the gesture (created once) always calls the latest onClose
   const onCloseRef = useRef(onClose);
@@ -96,6 +99,40 @@ export function BottomSheet({ visible, onClose, children }: BottomSheetProps) {
     }
   }, [visible, animateOpen, animateClose]);
 
+  // ─── Keyboard listeners ───────────────────────────────────────────────────────
+  // KAV inside Modal is unreliable on iOS (interactive dismiss leaves residual space).
+  // Instead, listen directly to keyboard events and animate a marginBottom on the sheet.
+
+  useEffect(() => {
+    if (!keyboardAvoiding) return;
+
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      keyboardMargin.value = withTiming(e.endCoordinates.height, {
+        duration: Platform.OS === "ios" ? e.duration : 200,
+      });
+    });
+    const hideSub = Keyboard.addListener(hideEvent, (e) => {
+      keyboardMargin.value = withTiming(0, {
+        duration: Platform.OS === "ios" ? e.duration : 200,
+      });
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, [keyboardAvoiding, keyboardMargin]);
+
+  // Reset keyboard margin when sheet closes
+  useEffect(() => {
+    if (!visible) {
+      keyboardMargin.value = 0;
+    }
+  }, [visible, keyboardMargin]);
+
   // ─── Gesture ──────────────────────────────────────────────────────────────────
   // Created once — all captured values are stable references
 
@@ -133,6 +170,7 @@ export function BottomSheet({ visible, onClose, children }: BottomSheetProps) {
 
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
+    marginBottom: keyboardMargin.value,
   }));
 
   const backdropStyle = useAnimatedStyle(() => ({
@@ -183,7 +221,11 @@ export function BottomSheet({ visible, onClose, children }: BottomSheetProps) {
               </View>
             </GestureDetector>
 
-            <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              bounces={false}
+              keyboardShouldPersistTaps="handled"
+            >
               {children}
             </ScrollView>
           </Animated.View>
