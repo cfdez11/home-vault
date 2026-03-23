@@ -38,6 +38,7 @@ jobs:
   build:
     name: EAS Build (${{ github.event_name == 'push' && 'production / all' || format('{0} / {1}', inputs.profile, inputs.platform) }})
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
