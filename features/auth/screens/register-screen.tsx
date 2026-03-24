@@ -18,6 +18,7 @@ import { useRouter } from "expo-router";
 import { ArrowRight, AtSign, Lock } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+import { toast } from "sonner-native";
 
 export default function RegisterScreen() {
   const colors = useThemeColors();
@@ -35,8 +36,16 @@ export default function RegisterScreen() {
   });
 
   async function onSubmit(data: RegisterFormValues) {
-    const { error } = await signUp(data.email, data.password);
-    if (error) setError("root", { message: error });
+    const { error, needsConfirmation } = await signUp(data.email, data.password);
+    if (error) {
+      setError("root", { message: error });
+      return;
+    }
+    if (needsConfirmation) {
+      toast.success("Revisa tu email para confirmar tu cuenta");
+      router.replace("/auth/login");
+    }
+    // If no confirmation needed, onAuthStateChange fires and tab layout redirects automatically
   }
 
   return (

@@ -16,6 +16,7 @@ import {
   type IncidentFormValues,
 } from "../schemas/incident-schemas";
 import { CompanyPickerSheet } from "./company-picker-sheet";
+import { PropertyPickerSheet } from "./property-picker-sheet";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -45,6 +46,7 @@ const FIELD_ORDER: (keyof IncidentFormValues)[] = [
   "priority",
   "date",
   "cost",
+  "propertyId",
   "companyName",
 ];
 
@@ -98,13 +100,19 @@ function DocumentRow({ doc, onRemove }: DocumentRowProps) {
 // ─── IncidentForm ─────────────────────────────────────────────────────────────
 
 interface IncidentFormProps {
+  initialPropertyId?: number;
   defaultValues?: Partial<IncidentFormValues>;
-  onSubmit: (values: IncidentFormValues, documents: DocumentFormValues[]) => void;
+  onSubmit: (
+    values: IncidentFormValues,
+    documents: DocumentFormValues[],
+    companyId: number | null,
+  ) => void;
   isSubmitting?: boolean;
   scrollViewRef?: React.RefObject<ScrollView | null>;
 }
 
 export function IncidentForm({
+  initialPropertyId,
   defaultValues,
   onSubmit,
   isSubmitting,
@@ -114,6 +122,9 @@ export function IncidentForm({
   const [documents, setDocuments] = useState<(DocumentFormValues & { id: string })[]>([]);
   const [addDocOpen, setAddDocOpen] = useState(false);
   const [companyPickerOpen, setCompanyPickerOpen] = useState(false);
+  const [propertyPickerOpen, setPropertyPickerOpen] = useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
+  const [selectedPropertyName, setSelectedPropertyName] = useState<string | null>(null);
 
   const fieldYRef = useRef<Partial<Record<keyof IncidentFormValues, number>>>({});
 
@@ -133,6 +144,7 @@ export function IncidentForm({
       date: "",
       cost: undefined,
       companyName: undefined,
+      propertyId: initialPropertyId,
       ...defaultValues,
     },
   });
@@ -160,7 +172,7 @@ export function IncidentForm({
   }
 
   function onFormSubmit(values: IncidentFormValues) {
-    onSubmit(values, documents);
+    onSubmit(values, documents, selectedCompanyId);
   }
 
   return (
@@ -293,11 +305,56 @@ export function IncidentForm({
 
       <Separator />
 
-      {/* ── Empresa de Servicios ── */}
+      {/* ── Propiedad (requerida, solo cuando no viene pre-seleccionada) ── */}
+      {!initialPropertyId && (
+        <View className="gap-5">
+          <FormSectionHeader>Propiedad</FormSectionHeader>
+          <View
+            className="gap-1.5"
+            onLayout={(e) => { fieldYRef.current.propertyId = e.nativeEvent.layout.y; }}
+          >
+            <Text className="text-[11px] font-inter-semibold text-primary uppercase tracking-widest">
+              Propiedad
+            </Text>
+            <Button
+              unstyled
+              onPress={() => setPropertyPickerOpen(true)}
+              className={cn(
+                "flex-row items-center bg-muted rounded-sm px-4 h-[52px] gap-3",
+                errors.propertyId && "border border-destructive"
+              )}
+            >
+              <Text
+                className={cn(
+                  "flex-1 text-[15px] font-inter",
+                  selectedPropertyName ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
+                {selectedPropertyName ?? "Selecciona una propiedad"}
+              </Text>
+            </Button>
+            {errors.propertyId && (
+              <Text className="text-[12px] font-inter text-destructive">
+                {errors.propertyId.message}
+              </Text>
+            )}
+          </View>
+        </View>
+      )}
+
+      <Separator />
+
+      {/* ── Empresa de Servicios (opcional) ── */}
       <View className="gap-5">
         <FormSectionHeader>Empresa de Servicios</FormSectionHeader>
 
-        <View onLayout={(e) => { fieldYRef.current.companyName = e.nativeEvent.layout.y; }}>
+        <View
+          className="gap-1.5"
+          onLayout={(e) => { fieldYRef.current.companyName = e.nativeEvent.layout.y; }}
+        >
+          <Text className="text-[11px] font-inter-semibold text-primary uppercase tracking-widest">
+            Empresa de Servicios
+          </Text>
           <Button
             unstyled
             onPress={() => setCompanyPickerOpen(true)}
@@ -309,14 +366,9 @@ export function IncidentForm({
                 companyName ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              {companyName ?? "Selecciona una empresa"}
+              {companyName ?? "Selecciona una empresa (opcional)"}
             </Text>
           </Button>
-          {errors.companyName && (
-            <Text className="text-[12px] font-inter text-destructive mt-1.5">
-              {errors.companyName.message}
-            </Text>
-          )}
         </View>
       </View>
 
@@ -383,7 +435,20 @@ export function IncidentForm({
         visible={companyPickerOpen}
         onClose={() => setCompanyPickerOpen(false)}
         value={companyName ?? null}
-        onChange={(name) => setValue("companyName", name ?? undefined)}
+        onChange={(companyId, name) => {
+          setSelectedCompanyId(companyId);
+          setValue("companyName", name ?? undefined);
+        }}
+      />
+
+      <PropertyPickerSheet
+        visible={propertyPickerOpen}
+        onClose={() => setPropertyPickerOpen(false)}
+        value={selectedPropertyName}
+        onChange={(propertyId, propertyName) => {
+          setValue("propertyId", propertyId, { shouldValidate: true });
+          setSelectedPropertyName(propertyName);
+        }}
       />
     </View>
   );

@@ -10,6 +10,7 @@ interface StatCardProps {
   containerClassName: string;
   valueClassName: string;
   labelClassName: string;
+  onPress?: () => void;
 }
 
 export function StatCard({
@@ -20,9 +21,10 @@ export function StatCard({
   containerClassName,
   valueClassName,
   labelClassName,
+  onPress,
 }: StatCardProps) {
   return (
-    <Card className={cn("flex-1 p-4", containerClassName)}>
+    <Card onPress={onPress} className={cn("flex-1 p-4", containerClassName)}>
       <View className="flex-row justify-between items-center">
         {icon}
         {indicator}

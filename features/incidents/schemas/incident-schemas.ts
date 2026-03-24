@@ -14,6 +14,10 @@ export const incidentSchema = z.object({
       "Debe ser un número válido",
     ),
   companyName: z.string().optional(),
+  propertyId: z
+    .number({ required_error: "La propiedad es obligatoria" })
+    .int()
+    .positive({ message: "La propiedad es obligatoria" }),
 });
 
 export type IncidentFormValues = z.infer<typeof incidentSchema>;

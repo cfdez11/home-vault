@@ -21,6 +21,9 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { AppToaster } from "@/components/ui/app-toaster";
 import { NativewindThemeProvider } from "@/components/ui/nativewind-theme-provider";
 import { AuthProvider } from "@/features/auth/context/auth-context";
 import {
@@ -29,6 +32,8 @@ import {
 } from "@/lib/theme-preference-context";
 
 import "../globals.css";
+
+const queryClient = new QueryClient();
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -50,9 +55,11 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemePreferenceProvider>
-        <ThemedApp />
-      </ThemePreferenceProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemePreferenceProvider>
+          <ThemedApp />
+        </ThemePreferenceProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }
@@ -61,7 +68,9 @@ function ThemedApp() {
   const { effectiveScheme } = useThemePreference();
 
   return (
-    <ThemeProvider value={effectiveScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider
+      value={effectiveScheme === "dark" ? DarkTheme : DefaultTheme}
+    >
       <NativewindThemeProvider>
         <AuthProvider>
           <Stack>
@@ -92,6 +101,10 @@ function ThemedApp() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="companies/[id]"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="companies/[id]/edit"
               options={{ headerShown: false }}
             />
@@ -100,6 +113,7 @@ function ThemedApp() {
               options={{ presentation: "modal", title: "Modal" }}
             />
           </Stack>
+          <AppToaster />
           <StatusBar style="auto" />
         </AuthProvider>
       </NativewindThemeProvider>

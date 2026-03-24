@@ -4,7 +4,11 @@ import { useThemeColors } from "@/hooks/use-theme-colors";
 import { ClipboardList } from "lucide-react-native";
 import { Text, View } from "react-native";
 
-export function IncidentsEmptyList() {
+interface IncidentsEmptyListProps {
+  onPress?: () => void;
+}
+
+export function IncidentsEmptyList({ onPress }: IncidentsEmptyListProps) {
   const colors = useThemeColors();
 
   return (
@@ -19,11 +23,11 @@ export function IncidentsEmptyList() {
             Sin incidencias
           </Text>
           <Text className="text-[13px] font-inter text-muted-foreground text-center">
-            No hay incidencias que coincidan con tu búsqueda
+            No se han encontrado incidencias
           </Text>
         </View>
 
-        <Button>Nueva incidencia</Button>
+        <Button onPress={onPress}>Añadir incidencia</Button>
       </View>
     </ScreenSection>
   );

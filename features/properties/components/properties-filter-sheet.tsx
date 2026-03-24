@@ -1,9 +1,9 @@
-import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { BottomSheet, SheetCloseButton, SheetDescription, SheetTitle } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { cn } from "@/lib/utils";
-import { AlertCircle, CheckCircle2, History, X } from "lucide-react-native";
+import { AlertCircle, CheckCircle2, History } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 import {
@@ -151,20 +151,10 @@ export function PropertiesFilterSheet({
       <View className="px-5 pt-4">
         <View className="flex-row items-start justify-between">
           <View className="gap-0.5">
-            <Text className="text-[24px] font-manrope-bold text-primary">
-              Filtros
-            </Text>
-            <Text className="text-[13px] font-inter text-muted-foreground">
-              Personaliza tu búsqueda de propiedades
-            </Text>
+            <SheetTitle>Filtros</SheetTitle>
+            <SheetDescription>Personaliza tu búsqueda de propiedades</SheetDescription>
           </View>
-          <Button
-            unstyled
-            onPress={onClose}
-            className="w-11 h-11 rounded-full bg-muted items-center justify-center mt-0.5"
-          >
-            <X size={18} color={colors.mutedForeground} />
-          </Button>
+          <SheetCloseButton onPress={onClose} />
         </View>
         <Separator className="my-5" />
       </View>

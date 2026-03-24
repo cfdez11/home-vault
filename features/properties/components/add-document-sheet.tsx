@@ -1,13 +1,12 @@
+import { BottomSheet, SheetCloseButton, SheetDescription, SheetTitle } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useThemeColors } from "@/hooks/use-theme-colors";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, X } from "lucide-react-native";
+import { Link } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { type DocumentFormValues, documentSchema } from "../schemas/property-schemas";
 
 const DOCUMENT_TYPE_OPTIONS = [
@@ -24,8 +23,6 @@ interface AddDocumentSheetProps {
 }
 
 export function AddDocumentSheet({ visible, onClose, onAdd }: AddDocumentSheetProps) {
-  const colors = useThemeColors();
-
   const { control, handleSubmit, reset, formState: { errors } } = useForm<DocumentFormValues>({
     resolver: zodResolver(documentSchema),
     defaultValues: { title: "", type: "other", date: "", url: "", notes: "" },
@@ -43,20 +40,10 @@ export function AddDocumentSheet({ visible, onClose, onAdd }: AddDocumentSheetPr
         {/* Header */}
         <View className="flex-row items-start justify-between">
           <View className="gap-0.5">
-            <Text className="text-[24px] font-manrope-bold text-primary">
-              Añadir Documento
-            </Text>
-            <Text className="text-[13px] font-inter text-muted-foreground">
-              Adjunta un documento a esta propiedad
-            </Text>
+            <SheetTitle>Añadir Documento</SheetTitle>
+            <SheetDescription>Adjunta un documento a esta propiedad</SheetDescription>
           </View>
-          <Button
-            unstyled
-            onPress={onClose}
-            className="w-11 h-11 rounded-full bg-muted items-center justify-center mt-0.5"
-          >
-            <X size={18} color={colors.mutedForeground} />
-          </Button>
+          <SheetCloseButton onPress={onClose} />
         </View>
 
         <Separator />

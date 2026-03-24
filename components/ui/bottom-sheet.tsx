@@ -1,5 +1,18 @@
+import { Button } from "@/components/ui/button";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, Keyboard, Modal, Platform, Pressable, ScrollView, View } from "react-native";
+import {
+  Dimensions,
+  Keyboard,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -14,6 +27,51 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+// ─── Sheet header primitives ──────────────────────────────────────────────────
+
+export function SheetTitle({
+  children,
+  className,
+}: {
+  children: string;
+  className?: string;
+}) {
+  return (
+    <Text className={cn("text-2xl font-manrope-bold text-primary", className)}>
+      {children}
+    </Text>
+  );
+}
+
+export function SheetDescription({
+  children,
+  className,
+}: {
+  children: string;
+  className?: string;
+}) {
+  return (
+    <Text className={cn("font-inter text-muted-foreground", className)}>
+      {children}
+    </Text>
+  );
+}
+
+export function SheetCloseButton({ onPress }: { onPress: () => void }) {
+  const colors = useThemeColors();
+  return (
+    <Button
+      unstyled
+      onPress={onPress}
+      className="w-11 h-11 rounded-full bg-muted items-center justify-center mt-0.5"
+    >
+      <X size={18} color={colors.mutedForeground} />
+    </Button>
+  );
+}
+
+// ─── BottomSheet ──────────────────────────────────────────────────────────────
+
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SPRING = { damping: 26, stiffness: 260, mass: 0.8 };
 const CLOSE_THRESHOLD = 100;
@@ -26,7 +84,12 @@ export interface BottomSheetProps {
   keyboardAvoiding?: boolean;
 }
 
-export function BottomSheet({ visible, onClose, children, keyboardAvoiding = false }: BottomSheetProps) {
+export function BottomSheet({
+  visible,
+  onClose,
+  children,
+  keyboardAvoiding = false,
+}: BottomSheetProps) {
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -67,7 +130,13 @@ export function BottomSheet({ visible, onClose, children, keyboardAvoiding = fal
       setModalVisible(true);
       // Entrance animation starts via Modal's onShow
     }
-  }, [translateY, backdropOpacity, closeGen, isModalMounted, startOpenAnimation]);
+  }, [
+    translateY,
+    backdropOpacity,
+    closeGen,
+    isModalMounted,
+    startOpenAnimation,
+  ]);
 
   const animateClose = useCallback(
     (notifyParent: boolean) => {
@@ -106,8 +175,10 @@ export function BottomSheet({ visible, onClose, children, keyboardAvoiding = fal
   useEffect(() => {
     if (!keyboardAvoiding) return;
 
-    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const showEvent =
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent =
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
     const showSub = Keyboard.addListener(showEvent, (e) => {
       keyboardMargin.value = withTiming(e.endCoordinates.height, {

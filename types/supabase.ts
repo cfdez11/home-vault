@@ -35,20 +35,31 @@ export type Database = {
           id: number
           name: string
           phone: string | null
+          user_id: number | null
         }
         Insert: {
           email?: string | null
           id?: never
           name: string
           phone?: string | null
+          user_id?: number | null
         }
         Update: {
           email?: string | null
           id?: never
           name?: string
           phone?: string | null
+          user_id?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "companies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       company_categories: {
         Row: {
@@ -256,33 +267,36 @@ export type Database = {
       }
       users: {
         Row: {
+          auth_id: string | null
           created_at: string | null
           email: string
-          first_name: string
+          first_name: string | null
           id: number
-          last_name: string
-          password: string
-          phone: string
+          last_name: string | null
+          password: string | null
+          phone: string | null
           updated_at: string | null
         }
         Insert: {
+          auth_id?: string | null
           created_at?: string | null
           email: string
-          first_name: string
+          first_name?: string | null
           id?: never
-          last_name: string
-          password: string
-          phone: string
+          last_name?: string | null
+          password?: string | null
+          phone?: string | null
           updated_at?: string | null
         }
         Update: {
+          auth_id?: string | null
           created_at?: string | null
           email?: string
-          first_name?: string
+          first_name?: string | null
           id?: never
-          last_name?: string
-          password?: string
-          phone?: string
+          last_name?: string | null
+          password?: string | null
+          phone?: string | null
           updated_at?: string | null
         }
         Relationships: []

@@ -1,4 +1,4 @@
-import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { BottomSheet, SheetTitle } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { cn } from "@/lib/utils";
@@ -68,11 +68,7 @@ export function Select<T extends string = string>({
 
       <BottomSheet visible={open} onClose={() => setOpen(false)}>
         <View className="px-5 pt-2 pb-6 gap-1">
-          {label && (
-            <Text className="text-[18px] font-manrope-bold text-primary mb-4">
-              {label}
-            </Text>
-          )}
+          {label && <SheetTitle className="mb-4">{label}</SheetTitle>}
           {options.map((option) => {
             const isSelected = option.value === value;
             return (

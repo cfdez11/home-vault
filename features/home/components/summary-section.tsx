@@ -1,6 +1,7 @@
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { Badge } from "@/components/ui/badge";
 import { ScreenSection } from "@/components/ui/screen";
+import { useRouter } from "expo-router";
 import { AlertTriangle, FileText } from "lucide-react-native";
 import { View } from "react-native";
 import { StatCard } from "./stat-card";
@@ -12,6 +13,7 @@ interface SummarySectionProps {
 
 export function SummarySection({ openIncidents, newDocuments }: SummarySectionProps) {
   const colors = useThemeColors();
+  const router = useRouter();
 
   return (
     <ScreenSection title="Resumen de Hoy">
@@ -28,6 +30,7 @@ export function SummarySection({ openIncidents, newDocuments }: SummarySectionPr
           }
           value={openIncidents}
           label={`Incidencias\nAbiertas`}
+          onPress={() => router.push("/(tabs)/incidents" as any)}
         />
         <StatCard
           containerClassName="bg-accent-subtle"

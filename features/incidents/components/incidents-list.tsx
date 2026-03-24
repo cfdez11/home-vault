@@ -5,7 +5,7 @@ import type { IncidentStatus, PriorityLevel } from "../types";
 import { IncidentListCard } from "./incident-list-card";
 
 export interface Incident {
-  id: string;
+  id: number;
   title: string;
   description: string;
   status: IncidentStatus;

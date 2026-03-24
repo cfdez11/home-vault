@@ -5,10 +5,10 @@ import type { PropertyType } from "../types";
 import { PropertyListCard } from "./property-list-card";
 
 export interface Property {
-  id: string;
+  id: number;
   name: string;
   address: string;
-  type?: PropertyType;
+  type?: PropertyType | null;
   incidents?: number;
   docsCount: number;
 }

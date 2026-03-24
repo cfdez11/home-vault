@@ -7,8 +7,14 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 interface AuthContextValue {
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: string | null }>;
+  signUp: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signInWithGoogle: () => Promise<{ error: string | null }>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -18,7 +24,7 @@ const AuthContext = createContext<AuthContextValue>({
   session: null,
   loading: true,
   signIn: async () => ({ error: null }),
-  signUp: async () => ({ error: null }),
+  signUp: async () => ({ error: null, needsConfirmation: false }),
   signInWithGoogle: async () => ({ error: null }),
   resetPassword: async () => ({ error: null }),
   signOut: async () => {},
@@ -34,7 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setLoading(false); // covers edge case where onAuthStateChange fires before getSession resolves
     });
@@ -43,13 +51,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function signIn(email: string, password: string) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     return { error: error?.message ?? null };
   }
 
   async function signUp(email: string, password: string) {
-    const { error } = await supabase.auth.signUp({ email, password });
-    return { error: error?.message ?? null };
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) return { error: error.message, needsConfirmation: false };
+    // If session is null after signUp, Supabase requires email confirmation
+    const needsConfirmation = !data.session;
+    return { error: null, needsConfirmation };
   }
 
   async function signInWithGoogle(): Promise<{ error: string | null }> {
@@ -61,14 +75,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) return { error: error.message };
-    if (!data.url) return { error: "No se pudo iniciar el proceso de autenticación" };
+    if (!data.url)
+      return { error: "No se pudo iniciar el proceso de autenticación" };
 
     const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
 
-    if (result.type !== "success") return { error: null }; // user cancelled, not an error
+    if (result.type !== "success") return { error: null }; // user cancelled
 
-    // Implicit flow: tokens come in the URL fragment (#access_token=...&refresh_token=...)
-    const fragment = result.url.split("#")[1] ?? "";
+    // ASWebAuthenticationSession returns the full URL including the fragment (#access_token=...)
+    // which iOS strips from regular deep links — this is why we parse it here and not in the callback route
+    const fragment = result.url.includes("#")
+      ? result.url.split("#")[1]
+      : (result.url.split("?")[1] ?? "");
     const params = Object.fromEntries(new URLSearchParams(fragment));
 
     if (!params.access_token || !params.refresh_token) {
@@ -85,7 +103,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function resetPassword(email: string) {
     const redirectTo = ExpoLinking.createURL("auth/reset-password");
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
     return { error: error?.message ?? null };
   }
 
@@ -94,7 +114,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, loading, signIn, signUp, signInWithGoogle, resetPassword, signOut }}>
+    <AuthContext.Provider
+      value={{
+        session,
+        loading,
+        signIn,
+        signUp,
+        signInWithGoogle,
+        resetPassword,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

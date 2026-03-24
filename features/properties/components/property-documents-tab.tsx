@@ -31,9 +31,10 @@ function EmptyState({ message }: { message: string }) {
 
 interface PropertyDocumentsTabProps {
   documents: PropertyDocument[];
+  isLoading?: boolean;
 }
 
-export function PropertyDocumentsTab({ documents }: PropertyDocumentsTabProps) {
+export function PropertyDocumentsTab({ documents, isLoading }: PropertyDocumentsTabProps) {
   const [search, setSearch] = useState("");
 
   const filtered =

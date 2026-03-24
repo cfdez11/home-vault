@@ -1,6 +1,13 @@
+import { useThemeColors } from "@/hooks/use-theme-colors";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  View,
+} from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -15,6 +22,8 @@ interface ScreenProps {
   fab?: React.ReactNode;
   keyboardAvoiding?: boolean;
   scrollViewRef?: React.RefObject<ScrollView | null>;
+  onRefresh?: () => void;
+  refreshing?: boolean;
 }
 
 export function Screen({
@@ -23,9 +32,12 @@ export function Screen({
   fab,
   keyboardAvoiding = false,
   scrollViewRef,
+  onRefresh,
+  refreshing = false,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const [headerHeight, setHeaderHeight] = useState(0);
+  const colors = useThemeColors();
 
   const scrollView = (
     <ScrollView
@@ -34,6 +46,16 @@ export function Screen({
       contentContainerStyle={{ paddingBottom: 140 }}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
+          />
+        ) : undefined
+      }
     >
       {children}
     </ScrollView>

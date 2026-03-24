@@ -1,14 +1,14 @@
 import { ScreenSection } from "@/components/ui/screen";
+import { useRouter } from "expo-router";
 import { View } from "react-native";
-import type { CompanyCategory } from "../types";
 import { CompanyListCard, type RecentIncident } from "./company-list-card";
 
 export interface Company {
-  id: string;
+  id: number;
   name: string;
-  category: CompanyCategory;
-  phone: string;
-  email: string;
+  categories: string[];
+  phone: string | null;
+  email: string | null;
   pendingIncidents: number;
   recentIncidents: RecentIncident[];
 }
@@ -18,11 +18,17 @@ interface CompaniesListProps {
 }
 
 export function CompaniesList({ companies }: CompaniesListProps) {
+  const router = useRouter();
+
   return (
     <ScreenSection padded={false}>
       <View className="gap-4">
         {companies.map((company) => (
-          <CompanyListCard key={company.id} {...company} />
+          <CompanyListCard
+            key={company.id}
+            {...company}
+            onPress={() => router.push(`/companies/${company.id}` as any)}
+          />
         ))}
       </View>
     </ScreenSection>

@@ -1,9 +1,7 @@
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
+import { BottomSheet, SheetCloseButton, SheetDescription, SheetTitle } from "@/components/ui/bottom-sheet";
 import { Separator } from "@/components/ui/separator";
-import { useThemeColors } from "@/hooks/use-theme-colors";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react-native";
+import { Button } from "@/components/ui/button";
 import { Text, View } from "react-native";
 import {
   PRIORITY_LABELS,
@@ -66,8 +64,6 @@ export function IncidentsFilterSheet({
   filters,
   onChange,
 }: IncidentsFilterSheetProps) {
-  const colors = useThemeColors();
-
   function setStatus(status: IncidentStatus) {
     onChange({ ...filters, status: filters.status === status ? null : status });
   }
@@ -81,20 +77,10 @@ export function IncidentsFilterSheet({
       <View className="px-5 pt-4">
         <View className="flex-row items-start justify-between">
           <View className="gap-0.5">
-            <Text className="text-[24px] font-manrope-bold text-primary">
-              Filtros
-            </Text>
-            <Text className="text-[13px] font-inter text-muted-foreground">
-              Personaliza tu búsqueda de incidencias
-            </Text>
+            <SheetTitle>Filtros</SheetTitle>
+            <SheetDescription>Personaliza tu búsqueda de incidencias</SheetDescription>
           </View>
-          <Button
-            unstyled
-            onPress={onClose}
-            className="w-11 h-11 rounded-full bg-muted items-center justify-center mt-0.5"
-          >
-            <X size={18} color={colors.mutedForeground} />
-          </Button>
+          <SheetCloseButton onPress={onClose} />
         </View>
         <Separator className="my-5" />
       </View>
