@@ -1,15 +1,11 @@
-import { BottomSheet, SheetTitle } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
+import { PickerSheet } from "@/components/ui/picker-sheet";
 import { useCompanies } from "@/features/companies/hooks/use-companies";
-import { useThemeColors } from "@/hooks/use-theme-colors";
-import { cn } from "@/lib/utils";
-import { Check } from "lucide-react-native";
-import { ActivityIndicator, Text, View } from "react-native";
 
 interface CompanyPickerSheetProps {
   visible: boolean;
   onClose: () => void;
-  value: string | null;
+  /** Id of the currently selected company, or null. */
+  value: number | null;
   onChange: (companyId: number | null, companyName: string | null) => void;
 }
 
@@ -19,57 +15,23 @@ export function CompanyPickerSheet({
   value,
   onChange,
 }: CompanyPickerSheetProps) {
-  const colors = useThemeColors();
   const { data: companies, isLoading } = useCompanies();
 
-  function handleSelect(id: number, name: string) {
-    const isDeselect = value === name;
-    onChange(isDeselect ? null : id, isDeselect ? null : name);
-    onClose();
+  function handleSelect(id: string | number, label: string) {
+    const isDeselect = value === id;
+    onChange(isDeselect ? null : (id as number), isDeselect ? null : label);
   }
 
   return (
-    <BottomSheet visible={visible} onClose={onClose}>
-      <View className="px-5 pt-2 pb-6 gap-1">
-        <SheetTitle className="mb-4">Empresa de Servicios</SheetTitle>
-
-        {isLoading ? (
-          <ActivityIndicator color={colors.primary} />
-        ) : (companies ?? []).length === 0 ? (
-          <Text className="text-[14px] font-inter text-muted-foreground text-center py-4">
-            No tienes empresas guardadas
-          </Text>
-        ) : (
-          <>
-            {(companies ?? []).map((company) => {
-              const isSelected = value === company.name;
-              return (
-                <Button
-                  key={company.id}
-                  unstyled
-                  onPress={() => handleSelect(company.id, company.name)}
-                  className={cn(
-                    "flex-row items-center justify-between px-4 py-4 rounded-lg",
-                    isSelected ? "bg-primary" : "bg-muted"
-                  )}
-                >
-                  <Text
-                    className={cn(
-                      "text-[15px] font-inter-medium",
-                      isSelected ? "text-primary-foreground" : "text-foreground"
-                    )}
-                  >
-                    {company.name}
-                  </Text>
-                  {isSelected && (
-                    <Check size={18} color={colors.primaryForeground} />
-                  )}
-                </Button>
-              );
-            })}
-          </>
-        )}
-      </View>
-    </BottomSheet>
+    <PickerSheet
+      visible={visible}
+      onClose={onClose}
+      title="Empresa de Servicios"
+      value={value}
+      options={(companies ?? []).map((c) => ({ id: c.id, label: c.name }))}
+      onSelect={handleSelect}
+      isLoading={isLoading}
+      emptyText="No tienes empresas guardadas"
+    />
   );
 }
