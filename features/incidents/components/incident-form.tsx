@@ -434,7 +434,7 @@ export function IncidentForm({
       <CompanyPickerSheet
         visible={companyPickerOpen}
         onClose={() => setCompanyPickerOpen(false)}
-        value={companyName ?? null}
+        value={selectedCompanyId}
         onChange={(companyId, name) => {
           setSelectedCompanyId(companyId);
           setValue("companyName", name ?? undefined);
@@ -444,7 +444,7 @@ export function IncidentForm({
       <PropertyPickerSheet
         visible={propertyPickerOpen}
         onClose={() => setPropertyPickerOpen(false)}
-        value={selectedPropertyName}
+        value={watch("propertyId") ?? null}
         onChange={(propertyId, propertyName) => {
           setValue("propertyId", propertyId, { shouldValidate: true });
           setSelectedPropertyName(propertyName);
