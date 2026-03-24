@@ -1,8 +1,8 @@
-import { BottomSheet, SheetTitle } from "@/components/ui/bottom-sheet";
+import { PickerSheet } from "@/components/ui/picker-sheet";
 import { Button } from "@/components/ui/button";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown } from "lucide-react-native";
+import { ChevronDown } from "lucide-react-native";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
@@ -66,40 +66,14 @@ export function Select<T extends string = string>({
         <Text className="text-[12px] font-inter text-destructive">{error}</Text>
       )}
 
-      <BottomSheet visible={open} onClose={() => setOpen(false)}>
-        <View className="px-5 pt-2 pb-6 gap-1">
-          {label && <SheetTitle className="mb-4">{label}</SheetTitle>}
-          {options.map((option) => {
-            const isSelected = option.value === value;
-            return (
-              <Button
-                key={option.value}
-                unstyled
-                onPress={() => {
-                  onChange(option.value);
-                  setOpen(false);
-                }}
-                className={cn(
-                  "flex-row items-center justify-between px-4 py-4 rounded-lg",
-                  isSelected ? "bg-primary" : "bg-muted"
-                )}
-              >
-                <Text
-                  className={cn(
-                    "text-[15px] font-inter-medium",
-                    isSelected ? "text-primary-foreground" : "text-foreground"
-                  )}
-                >
-                  {option.label}
-                </Text>
-                {isSelected && (
-                  <Check size={18} color={colors.primaryForeground} />
-                )}
-              </Button>
-            );
-          })}
-        </View>
-      </BottomSheet>
+      <PickerSheet
+        visible={open}
+        onClose={() => setOpen(false)}
+        title={label ?? placeholder}
+        value={value}
+        options={options.map((o) => ({ id: o.value, label: o.label }))}
+        onSelect={(id) => onChange(id as T)}
+      />
     </View>
   );
 }
